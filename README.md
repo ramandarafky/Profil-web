@@ -170,4 +170,5 @@ docker-compose -f docker-compose.yml -f docker-compose.monitoring.yml down
 
 ---
 
-**Dibuat oleh Rafky - Cloud Computing & Distributed Systems Project**
+**Cloud Computing & Distributed Systems Project**
+
