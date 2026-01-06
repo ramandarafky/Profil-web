@@ -1,0 +1,70 @@
+graph TB
+    subgraph "Client Layer"
+        C1[Web Browser]
+        C2[Mobile App]
+        C3[API Consumers]
+    end
+
+    subgraph "Load Balancer Layer"
+        LB[Nginx Load Balancer<br/>Round Robin / Least Conn]
+    end
+
+    subgraph "Application Layer - Auto Scaled"
+        API1[Backend API Pod 1<br/>Node.js + Express]
+        API2[Backend API Pod 2<br/>Node.js + Express]
+        API3[Backend API Pod 3<br/>Node.js + Express]
+        API4[Backend API Pod N<br/>Auto-scaled based on load]
+    end
+
+    subgraph "Cache Layer"
+        REDIS[(Redis Cache<br/>- Session Storage<br/>- API Response Cache<br/>- Rate Limiting)]
+    end
+
+    subgraph "Database Layer"
+        DB[(PostgreSQL<br/>- Connection Pooling<br/>- Indexed Queries<br/>- Read Replicas)]
+    end
+
+    subgraph "Monitoring & Orchestration"
+        K8S[Kubernetes<br/>- HPA: 3-10 pods<br/>- CPU: 70% threshold<br/>- Memory: 80% threshold]
+        MON[Monitoring<br/>- Health Checks<br/>- Metrics<br/>- Logs]
+    end
+
+    C1 --> LB
+    C2 --> LB
+    C3 --> LB
+
+    LB --> API1
+    LB --> API2
+    LB --> API3
+    LB --> API4
+
+    API1 --> REDIS
+    API2 --> REDIS
+    API3 --> REDIS
+    API4 --> REDIS
+
+    API1 --> DB
+    API2 --> DB
+    API3 --> DB
+    API4 --> DB
+
+    K8S -.->|Auto-scale| API1
+    K8S -.->|Auto-scale| API2
+    K8S -.->|Auto-scale| API3
+    K8S -.->|Auto-scale| API4
+
+    MON -.->|Monitor| API1
+    MON -.->|Monitor| API2
+    MON -.->|Monitor| API3
+    MON -.->|Monitor| DB
+    MON -.->|Monitor| REDIS
+
+    style LB fill:#4A90E2,stroke:#2E5C8A,color:#fff
+    style REDIS fill:#DC382D,stroke:#A41E11,color:#fff
+    style DB fill:#336791,stroke:#1A3A5C,color:#fff
+    style K8S fill:#326CE5,stroke:#1A4B9E,color:#fff
+    style MON fill:#00C853,stroke:#00873D,color:#fff
+    style API1 fill:#68A063,stroke:#4A7349,color:#fff
+    style API2 fill:#68A063,stroke:#4A7349,color:#fff
+    style API3 fill:#68A063,stroke:#4A7349,color:#fff
+    style API4 fill:#68A063,stroke:#4A7349,color:#fff
